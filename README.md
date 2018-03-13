@@ -5,6 +5,6 @@ The Project is split up into different tiers: A Presentation Tier, which include
 Most of the code is undocumented, but as more code is implemented, there will be comments describing what each fragment accomplishes.
 
 ********************
-NOTE: This program can run if you simply clone this repository on Visual Studio 2017, hoeever you may need to update or install certain packages. It is a UWP application, so it can run on any Windows machine, however it is designed to run on a RPI running Windows IoT Core.
+NOTE: This program can run if you simply clone this repository on Visual Studio 2017, however you may need to update or install certain packages. It is a UWP application, so it can run on any Windows machine, however it is designed to run on a RPI running Windows IoT Core.
 ********************
 - Mike
