@@ -289,6 +289,8 @@ namespace WiFiConnect
                 ResultsListView.ScrollIntoView(ResultsListView.SelectedItem);
 
                 SwitchToItemState(selectedNetwork, WifiConnectedState, false);
+
+                WifiToEthernetAsync();
             }
             else
             {
@@ -301,7 +303,7 @@ namespace WiFiConnect
             {
                 network.UpdateConnectivityLevel();
             }
-            WifiToEthernetAsync();
+            
         }
 
         private async Task WifiToEthernetAsync()
@@ -319,32 +321,42 @@ namespace WiFiConnect
                 var tetheringManager = NetworkOperatorTetheringManager.CreateFromConnectionProfile(wifiConnectionProfile, targetNetworkAdapter);
 
                 var result = await tetheringManager.StartTetheringAsync();
-
+                
                 ContentDialog dialog = new ContentDialog()
                 {
                     Title = "Connection Status",
+                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+                    
                     MaxWidth = this.ActualWidth,
                     PrimaryButtonText = "OK",
                 };
 
                 if (result.Status == TetheringOperationStatus.Success)
                 {
-                    dialog.Content = new TextBlock
-                    {
-                        Text = "Connection successful, please connect tag manager",
-                        FontSize = 18,
-                    };
-
+                    //dialog.Content = new TextBlock -------------------------- UNCOMMENT ME LATER
+                    //{
+                       //Text = "Connection successful, please connect tag manager",
+                       //FontSize = 18,
+                    //};
                     
                 }
                 else
                 {
-                    dialog.Content = new TextBlock
-                    {
-                        Text = "Connection Failed",
-                        FontSize = 18,
-                    };
+                    //dialog.Content = new TextBlock ----------------------- UNCOMMENT ME LATER
+                    //{
+                        //Text = "Connection Failed",
+                        //FontSize = 18,
+                    //};
                 }
+
+                //TODO: temporary
+                dialog.Content = new TextBlock
+                {
+                    Text = "No Tag Manager Detected, Proceed for now",
+                    FontSize = 18,
+                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+                };
+
                 await dialog.ShowAsync();
 
                 rootPage.Frame.Navigate(typeof(UserInfo));
