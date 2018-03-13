@@ -44,18 +44,6 @@
 
                 <StackPanel Orientation="Vertical" Margin="5">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Bssid:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Bssid}" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Rssi:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Rssi}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Ch. Frequency:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=ChannelCenterFrequency}" TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Path=SecuritySettings}" TextWrapping="Wrap" Margin="0,0,5,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -110,18 +98,6 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="5">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Bssid:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Bssid}" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Rssi:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Rssi}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Ch. Frequency:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=ChannelCenterFrequency}" TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Path=SecuritySettings}" TextWrapping="Wrap" Margin="0,0,5,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -147,18 +123,6 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="5">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Bssid:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Bssid}" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Rssi:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=Rssi}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Ch. Frequency:" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Path=ChannelCenterFrequency}" TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Path=SecuritySettings}" TextWrapping="Wrap" Margin="0,0,5,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -180,7 +144,7 @@
 
             <!-- Row 1 -->
             <StackPanel Margin="0,0,0,10">
-                <TextBlock Text="WiFi Setup" Style="{StaticResource SampleHeaderTextStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Connect to a WiFi Network" Style="{StaticResource SampleHeaderTextStyle}" HorizontalAlignment="Center" FontFamily="Agency FB"/>
                 <TextBlock Style="{StaticResource ScenarioDescriptionTextStyle}" TextWrapping="Wrap"
                    Text="View available networks on the first WiFi Adapter and connect to a selected network.&#10;Use browser control to verify connectivity or accept WiFi Hotspot terms and conditions." Visibility="Collapsed"/>
             </StackPanel>

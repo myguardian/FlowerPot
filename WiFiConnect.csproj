@@ -95,13 +95,26 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DisplayHelpers.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Presentation\DashboardPage.xaml.cs">
+      <DependentUpon>DashboardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\TagSetupPage.xaml.cs">
+      <DependentUpon>TagSetupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\User.cs" />
+    <Compile Include="Presentation\UserInfo.xaml.cs">
+      <DependentUpon>UserInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\WifiPage.xaml.cs">
+      <DependentUpon>WifiPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLogic\DisplayHelpers.cs" />
+    <Compile Include="Presentation\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleConfiguration.cs" />
-    <Compile Include="WiFiConnect_Scenario.xaml.cs">
+    <Compile Include="BusinessLogic\SampleConfiguration.cs" />
+    <Compile Include="Presentation\WiFiConnect_Scenario.xaml.cs">
       <DependentUpon>WiFiConnect_Scenario.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -112,6 +125,7 @@
     <None Include="WiFiConnect_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\FlowerPot.png" />
     <Content Include="Assets\open_1bar.png" />
     <Content Include="Assets\open_2bar.png" />
     <Content Include="Assets\open_3bar.png" />
@@ -122,6 +136,7 @@
     <Content Include="Assets\secure_3bar.png" />
     <Content Include="Assets\secure_4bar.png" />
     <Content Include="Assets\secure_5bar.png" />
+    <Content Include="Assets\Sketch.png" />
     <Content Include="Assets\smalltile-sdk.png" />
     <Content Include="Assets\splash-sdk.png" />
     <Content Include="Assets\squaretile-sdk.png" />
@@ -142,11 +157,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Presentation\DashboardPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\TagSetupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\UserInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\WifiPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WiFiConnect_Scenario.xaml">
+    <Page Include="Presentation\WiFiConnect_Scenario.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

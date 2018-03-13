@@ -24,7 +24,7 @@ namespace WiFiConnect
     /// </summary>
     public sealed partial class WiFiConnect_Scenario : Page
     {
-        MainPage rootPage;
+        WifiPage rootPage;
         private WiFiAdapter firstAdapter;
 
         public ObservableCollection<WiFiNetworkDisplay> ResultCollection
@@ -41,7 +41,7 @@ namespace WiFiConnect
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             ResultCollection = new ObservableCollection<WiFiNetworkDisplay>();
-            rootPage = MainPage.Current;
+            rootPage = WifiPage.Current;
 
             // RequestAccessAsync must have been called at least once by the app before using the API
             // Calling it multiple times is fine but not necessary
@@ -288,8 +288,6 @@ namespace WiFiConnect
                 ResultsListView.SelectedItem = ResultsListView.Items[0];
                 ResultsListView.ScrollIntoView(ResultsListView.SelectedItem);
 
-
-
                 SwitchToItemState(selectedNetwork, WifiConnectedState, false);
             }
             else
@@ -306,7 +304,7 @@ namespace WiFiConnect
             WifiToEthernetAsync();
         }
 
-        private async System.Threading.Tasks.Task WifiToEthernetAsync()
+        private async Task WifiToEthernetAsync()
         {
             // Find the Ethernet profile (IANA Type 6)
             var connectionProfiles = NetworkInformation.GetConnectionProfiles();
@@ -336,6 +334,8 @@ namespace WiFiConnect
                         Text = "Connection successful, please connect tag manager",
                         FontSize = 18,
                     };
+
+                    
                 }
                 else
                 {
@@ -346,6 +346,8 @@ namespace WiFiConnect
                     };
                 }
                 await dialog.ShowAsync();
+
+                rootPage.Frame.Navigate(typeof(UserInfo));
             }
         }
 

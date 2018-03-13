@@ -1,0 +1,20 @@
+﻿<Page
+    x:Class="WiFiConnect.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WiFiConnect"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,25,0,0">
+            <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" Text="Dashboard" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="72" FontFamily="Agency FB"/>
+            <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME LNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB"/>
+            <TextBlock x:Name="txtNoTags" HorizontalAlignment="Center" Text="You don't have any tags setup, click below to setup a tag" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Agency FB" Margin="0,50,0,0" FontSize="35"/>
+            <Button x:Name="btnAdd" Content="Setup Tags" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontFamily="Agency FB" FontSize="25" Background="White" Foreground="Black" Margin="0,25,0,0" Click="OnTagSetupClick"/>
+        </StackPanel>
+
+    </Grid>
+</Page>

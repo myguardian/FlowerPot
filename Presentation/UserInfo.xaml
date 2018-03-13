@@ -1,0 +1,27 @@
+﻿<Page
+    x:Class="WiFiConnect.UserInfo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WiFiConnect"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock x:Name="txtTitle" Text="User Information" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="48" Margin="0,10,0,0" FontFamily="Agency FB"/>
+            <TextBlock x:Name="txtDevInfo" Text="Device Information" TextWrapping="Wrap" Margin="0,15,0,0" TextAlignment="Center" FontFamily="Agency FB" FontSize="24" HorizontalAlignment="Center"/>
+            <TextBox x:Name="txtFPID" Text="" FontFamily="Agency FB" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FlowDirection="LeftToRight" PlaceholderText="FlowerPot ID" TextAlignment="Center" Margin="5,15,5,0" MaxLength="100"/>
+            <TextBox x:Name="txtTagMgr" Text="" FontFamily="Agency FB" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FlowDirection="LeftToRight" PlaceholderText="Tag Manager Serial Number" TextAlignment="Center" Margin="5,10,5,0" MaxLength="100"/>
+            <TextBlock x:Name="txtUserInfo" Text="Personal Information" TextWrapping="Wrap" Margin="0,15,0,0" FontSize="24" FontFamily="Agency FB" TextAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBox x:Name="txtFirstName" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,15,0,0" PlaceholderText="First Name" FontFamily="Agency FB" FontSize="20" MaxLength="25"/>
+            <TextBox x:Name="txtLastName" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,10,0,0" PlaceholderText="Last Name" FontFamily="Agency FB" FontSize="20" MaxLength="25"/>
+            <TextBox x:Name="txtEmail" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,10,0,0" PlaceholderText="Email (someone@example.com)" FontFamily="Agency FB" FontSize="20" MaxLength="320"/>
+            <TextBox x:Name="txtAge" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,10,0,0" PlaceholderText="Age" FontFamily="Agency FB" FontSize="20" MaxLength="3"/>
+            <TextBox x:Name="txtGender" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,10,0,0" PlaceholderText="Male (M) / Female (F) / Other (O)" FontFamily="Agency FB" FontSize="20" MaxLength="3"/>
+            <TextBox x:Name="txtPhoneNum" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,10,0,0" PlaceholderText="Phone Number (1234567890)" FontFamily="Agency FB" FontSize="20" MaxLength="10"/>
+            <Button x:Name="btnConfirm" Content="Confirm Information" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0,25,0,0" FontSize="20" FontFamily="Agency FB" Click="OnConfirmInformation" Background="White" Foreground="Black"/>
+        </StackPanel>
+
+    </Grid>
+</Page>
