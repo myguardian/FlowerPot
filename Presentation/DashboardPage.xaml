@@ -12,18 +12,32 @@
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" Text="Dashboard" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="72" FontFamily="Agency FB" Margin="0,25,0,0"/>
             <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB"/>
-            <TextBlock x:Name="txtNoTags" HorizontalAlignment="Center" Text="You don't have any tags setup, click below to setup a tag" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Agency FB" FontSize="35"/>
-            <ListView x:Name="lstAlerts" Height="370" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="OnAlertSelected" HorizontalAlignment="Center">
+            <ListView x:Name="lstAlerts" Height="370" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="OnAlertSelected" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="10" Foreground="White" LostFocus="OnListViewLostFocus">
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="AlertListViewItem">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock x:Name="_txtAlertID" Text="{Binding AlertID}"/>
-                            <TextBlock x:Name="_txtFlowerpotID" Text="{Binding FlowerpotID}"/>
-                            <TextBlock x:Name="_txtAlertLevel" Text="{Binding AlertLevel}"/>
+                        <StackPanel Orientation="Vertical" >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="_txtAlertID" Text="{Binding AlertID}" FontFamily="Agency FB" Margin="0,0,25,0"/>
+                                <TextBlock x:Name="_txtFlowerpotID" Text="{Binding FlowerpotID}" FontFamily="Agency FB"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="_txtAlertDateTime" Text="{Binding AlertDateTime}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                                <TextBlock x:Name="_txtAcknowledgeDateTime" Text="{Binding AcknowledgeDateTime}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                                <TextBlock x:Name="_txtShortDescription" Text="{Binding ShortDescription}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock x:Name="_txtLongDescription" Text="{Binding LongDescription}" FontFamily="Agency FB"/>
+                                <TextBlock x:Name="_txtAlertLevel" Text="{Binding AlertLevel}" FontFamily="Agency FB"/>
+                            </StackPanel>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <StackPanel/>
             </ListView>
+            <StackPanel Margin="0,15,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="btnAcknowledge" Content="Acknowledge Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnAcknowledgeAlertClick" Margin="0,0,25,0"/>
+                <Button x:Name="btnRemove" Content="Remove Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRemoveAlertClick"/>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

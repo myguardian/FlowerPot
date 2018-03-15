@@ -20,14 +20,17 @@ namespace WiFiConnect.BusinessLogic
         private string _image;
         private string _sound;
 
-        public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, DateTime ackDT, int alertLvl)
+        public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, int alertLvl)
         {
             _alertID = alertID;
             _flowerpotID = fpID;
             _alertDateTime = alertDT;
             _shortDescription = shortDesc;
             _longDescription = longDesc;
-            _acknowledgedDateTime = ackDT;
+
+            //TODO: Maybe set this to null?
+            _acknowledgedDateTime = DateTime.Parse("1998-04-30 12:00:00");
+
             _alertLevel = alertLvl;
 
             //TODO: Temporary
@@ -40,7 +43,7 @@ namespace WiFiConnect.BusinessLogic
             get { return _alertID; }
             set { _alertID = value; }
         }
-        public string FlowerPotID
+        public string FlowerpotID
         {
             get { return _flowerpotID; }
             set { _flowerpotID = value; }
@@ -69,6 +72,11 @@ namespace WiFiConnect.BusinessLogic
         {
             get { return _alertLevel; }
             set { _alertLevel = value; }
+        }
+
+        public string toString()
+        {
+            return _shortDescription;
         }
     }
 }

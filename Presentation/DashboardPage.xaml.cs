@@ -48,7 +48,9 @@ namespace WiFiConnect
             string day = DateTime.Now.DayOfWeek.ToString();
             string firstName = _user.FirstName;
 
-            txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);  
+            txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);
+            btnAcknowledge.IsEnabled = false;
+            btnRemove.IsEnabled = false;
         }
 
         private async void DisplayAlerts()
@@ -93,7 +95,12 @@ namespace WiFiConnect
                 DateTime alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
                 string shortDescription = alertObject.GetNamedString("Short Description");
                 string longDescription = alertObject.GetNamedString("Long Description");
-                //TODO: GET ACKNOWLEDGE DATE TIME - not a valid date right now
+                //TODO: GET ACKNOWLEDGE DATE TIME - not a valid date right now ------------CHANGE ME BELOW-----
+
+               // if (alertObject.GetNamedString("Acknowledged Timestamp") == null)
+                //{
+
+                //}
                 //DateTime acknowledgeDateTime = DateTime.Parse(alertObject.GetNamedString("Acknowledged Timestamp"));
                 int alertLevel = Int32.Parse(alertObject.GetNamedString("Level"));
                 //TODO: GET IMAGE - set to null right now
@@ -101,7 +108,7 @@ namespace WiFiConnect
 
                 //add the alert into an array of alerts
                 //TODO: Temporarily adding the alert date time in place of the acknowledge date time
-                Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, alertDateTime, alertLevel);
+                Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, alertLevel);
                 _alerts[iAlert] = alert;
             }
          }
@@ -113,7 +120,35 @@ namespace WiFiConnect
 
         private void OnAlertSelected(object sender, SelectionChangedEventArgs e)
         {
+            btnAcknowledge.IsEnabled = true;
+            btnRemove.IsEnabled = true;
+        }
 
+        private void OnAcknowledgeAlertClick(object sender, RoutedEventArgs e)
+        {
+            Alert alert = (Alert)lstAlerts.SelectedItem;
+            alert.AcknowledgeDateTime = DateTime.Now;
+
+            //----TESTING
+            lstAlerts.Items.Clear();
+            foreach (Alert a in _alerts)
+            {
+                lstAlerts.Items.Add(a);
+            }
+        }
+
+        private void OnListViewLostFocus(object sender, RoutedEventArgs e)
+        {
+            //btnAcknowledge.IsEnabled = false;
+            //btnRemove.IsEnabled = false;
+        }
+
+        private void OnRemoveAlertClick(object sender, RoutedEventArgs e)
+        {
+            lstAlerts.Items.Remove(lstAlerts.SelectedItem);
+
+            btnAcknowledge.IsEnabled = false;
+            btnRemove.IsEnabled = false;
         }
     }
 }
