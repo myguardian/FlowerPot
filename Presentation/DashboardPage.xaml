@@ -11,7 +11,7 @@
 
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,25,0,0">
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" Text="Dashboard" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="72" FontFamily="Agency FB"/>
-            <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME LNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB"/>
+            <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB"/>
             <TextBlock x:Name="txtNoTags" HorizontalAlignment="Center" Text="You don't have any tags setup, click below to setup a tag" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Agency FB" Margin="0,50,0,0" FontSize="35"/>
             <Button x:Name="btnAdd" Content="Setup Tags" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontFamily="Agency FB" FontSize="25" Background="White" Foreground="Black" Margin="0,25,0,0" Click="OnTagSetupClick"/>
         </StackPanel>

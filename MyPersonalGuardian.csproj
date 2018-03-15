@@ -7,8 +7,8 @@
     <ProjectGuid>{D4B2224B-EFFD-4439-82DB-D2C79B274341}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WiFiConnect</RootNamespace>
-    <AssemblyName>WiFiConnect</AssemblyName>
+    <RootNamespace>MyPersonalGuardian</RootNamespace>
+    <AssemblyName>MyPersonalGuardian</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
