@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using WiFiConnect.BusinessLogic;
@@ -51,9 +52,11 @@ namespace WiFiConnect
             txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);
             btnAcknowledge.IsEnabled = false;
             btnRemove.IsEnabled = false;
+
+            
         }
 
-        private async void DisplayAlerts()
+        private  async void DisplayAlerts()
         {
             await LoadJson();
 
@@ -64,20 +67,31 @@ namespace WiFiConnect
             }
         }
 
-        public async Task LoadJson()
+        private void GetAlerts()
         {
-            string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/alerts.json";
-            JsonObject jsonObj = new JsonObject();
+        }
+        private async Task LoadJson()
+        {
+            //TODO: Temporary web server
+            string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID=0HLFXXL972UO";
+            string alertString;
 
-            using (var httpClient = new System.Net.Http.HttpClient())
+            using (var httpClient = new HttpClient())
             {
-                var stream =  await httpClient.GetStreamAsync(url);
-                StreamReader reader = new StreamReader(stream);
+                // var stream =  await httpClient.GetStreamAsync(url);
+                //StreamReader reader = new StreamReader(stream);
 
-                //stores the entire json file into one object
-                jsonObj = JsonObject.Parse(reader.ReadLine());
+                using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
+                {
+                    using (HttpContent content = response.Content)
+                    {
+                        alertString = content.ReadAsStringAsync().Result;
+                    }
+                }
+
             }
 
+            JsonObject jsonObj = JsonObject.Parse(alertString);
             //stores all of the alerts into one array
             JsonArray alertArray = jsonObj.GetNamedArray("Alerts");
 
