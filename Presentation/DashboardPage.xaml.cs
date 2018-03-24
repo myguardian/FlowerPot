@@ -30,6 +30,9 @@ namespace WiFiConnect
         private User _user;
         private Alert[] _alerts;
 
+        
+
+
         public DashboardPage()
         {
             this.InitializeComponent();
@@ -39,6 +42,8 @@ namespace WiFiConnect
             _alerts = null;
 
             DisplayAlerts();
+
+            lstAlerts.SelectedIndex = 0;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -49,11 +54,7 @@ namespace WiFiConnect
             string day = DateTime.Now.DayOfWeek.ToString();
             string firstName = _user.FirstName;
 
-            txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);
-            btnAcknowledge.IsEnabled = false;
-            btnRemove.IsEnabled = false;
-
-            
+            txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);            
         }
 
         private  async void DisplayAlerts()
@@ -67,9 +68,6 @@ namespace WiFiConnect
             }
         }
 
-        private void GetAlerts()
-        {
-        }
         private async Task LoadJson()
         {
             //TODO: Temporary web server
@@ -132,12 +130,6 @@ namespace WiFiConnect
             this.Frame.Navigate(typeof(TagSetupPage));
         }
 
-        private void OnAlertSelected(object sender, SelectionChangedEventArgs e)
-        {
-            btnAcknowledge.IsEnabled = true;
-            btnRemove.IsEnabled = true;
-        }
-
         private void OnAcknowledgeAlertClick(object sender, RoutedEventArgs e)
         {
             Alert alert = (Alert)lstAlerts.SelectedItem;
@@ -151,18 +143,74 @@ namespace WiFiConnect
             }
         }
 
-        private void OnListViewLostFocus(object sender, RoutedEventArgs e)
+        private async void OnRedButtonClick(object sender, RoutedEventArgs e)
         {
-            //btnAcknowledge.IsEnabled = false;
-            //btnRemove.IsEnabled = false;
+            //TODO: remove the selected alert - ask for confirmation with dialogue and wav file?
+            ContentDialog removeDialog = new ContentDialog()
+            {
+                Title = "Removal Confirmation",
+                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+
+                MaxWidth = this.ActualWidth,
+                PrimaryButtonText = "Remove Alert",
+                SecondaryButtonText = "Cancel",
+                
+                Content = new TextBlock
+                {
+                    Text = "Are you sure you would like to delete this alert?",
+                    FontSize = 18,
+                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+                }
+            };
+
+            await removeDialog.ShowAsync();
+
+            removeDialog.PrimaryButtonClick += ContentDialog_PrimaryButtonClick;
+                
         }
 
-        private void OnRemoveAlertClick(object sender, RoutedEventArgs e)
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            lstAlerts.Items.Remove(lstAlerts.SelectedItem);
+            lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+        }
 
-            btnAcknowledge.IsEnabled = false;
-            btnRemove.IsEnabled = false;
+        private void OnYellowButtonClick(object sender, RoutedEventArgs e)
+        {
+            //TODO: Snooze the selected alert - play again in 5 minutes - update acknowledge date time
+
+            //updates the acknowledge date time of the alert - TEMP - Use Sohail's Server
+            Alert alert = (Alert)lstAlerts.SelectedItem;
+            alert.AcknowledgeDateTime = DateTime.Now;
+
+            //----TESTING
+            lstAlerts.Items.Clear();
+            foreach (Alert a in _alerts)
+            {
+                lstAlerts.Items.Add(a);
+            }
+        }
+
+        private void OnGreenButonClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnUpButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (lstAlerts.SelectedIndex > 0)
+            {
+                lstAlerts.SelectedIndex--;
+                lstAlerts.ScrollIntoView(lstAlerts.SelectedItem);
+            }
+        }
+
+        private void OnDownButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (lstAlerts.SelectedIndex < lstAlerts.Items.Count - 1)
+            {
+                lstAlerts.SelectedIndex++;
+                lstAlerts.ScrollIntoView(lstAlerts.SelectedItem);
+            }
         }
     }
 }

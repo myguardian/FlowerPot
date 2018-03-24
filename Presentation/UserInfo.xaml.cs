@@ -35,7 +35,7 @@ namespace WiFiConnect
             {
 
                 //TODO: Fill out FlowerPot ID, Tag Manager Serial Number and MAC Address for user? 
-                string fpID = txtFPID.Text;
+                string fpID = "0HLFXXL972UO"; //TODO: For testing
                 string tagSerNum = txtTagMgr.Text;
 
                 string fName = txtFirstName.Text;

@@ -9,10 +9,10 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
             <TextBlock x:Name="txtTitle" HorizontalAlignment="Center" Text="Dashboard" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="72" FontFamily="Agency FB" Margin="0,25,0,0"/>
             <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB"/>
-            <ListView x:Name="lstAlerts" Height="370" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="OnAlertSelected" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="10" Foreground="White" LostFocus="OnListViewLostFocus">
+            <ListView x:Name="lstAlerts" Height="370" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="10" Foreground="White">
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="AlertListViewItem">
                         <StackPanel Orientation="Vertical" >
@@ -34,9 +34,23 @@
                 </ListView.ItemTemplate>
                 <StackPanel/>
             </ListView>
-            <StackPanel Margin="0,15,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="btnAcknowledge" Content="Acknowledge Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnAcknowledgeAlertClick" Margin="0,0,25,0"/>
-                <Button x:Name="btnRemove" Content="Remove Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRemoveAlertClick"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnRed" Content="Remove Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRedButtonClick" Background="Red" Foreground="Black"/>
+                    <Ellipse x:Name="ellRed" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Stroke="Red" Margin="0,24,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnYellow" Content="Snooze Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnYellowButtonClick" Background="#FFF3FF00" Foreground="Black" Margin="25,0,25,0"/>
+                    <Ellipse x:Name="ellYellow" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Stroke="#FFF3FF00" Margin="0,25,0,0"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnGreen" Content="Play Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnGreenButonClick" Background="#FF00FF1D" Foreground="Black"/>
+                    <Ellipse x:Name="ellGreen" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="#FF00FF1D" Fill="Black" Width="100" Margin="0,25,0,0"/>
+                </StackPanel>
+                <StackPanel Margin="25,0,0,0" VerticalAlignment="Center">
+                    <Button x:Name="btnUp" Content="Up" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,15" Click="OnUpButtonClick"/>
+                    <Button x:Name="btnDown" Content="Down" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15,0,0" Click="OnDownButtonClick"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
 
