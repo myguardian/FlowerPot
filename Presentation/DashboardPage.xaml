@@ -36,7 +36,7 @@
             </ListView>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button x:Name="btnRed" Content="Remove Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRedButtonClick" Background="Red" Foreground="Black"/>
+                    <Button x:Name="btnRed" Content="Acknowledge Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRedButtonClick" Background="Red" Foreground="Black"/>
                     <Ellipse x:Name="ellRed" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Stroke="Red" Margin="0,24,0,0"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">

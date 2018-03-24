@@ -13,7 +13,7 @@ namespace WiFiConnect.BusinessLogic
         private DateTime _alertDateTime;
         private string _shortDescription;
         private string _longDescription;
-        private DateTime _acknowledgedDateTime;
+        private DateTime _acknowledgeDateTime;
         private int _alertLevel;
 
         //TODO: Fields for image and sound
@@ -28,8 +28,7 @@ namespace WiFiConnect.BusinessLogic
             _shortDescription = shortDesc;
             _longDescription = longDesc;
 
-            //TODO: Maybe set this to null?
-            _acknowledgedDateTime = DateTime.Parse("1998-04-30 12:00:00");
+            _acknowledgeDateTime = DateTime.Parse("1001-01-01 00:00:00");
 
             _alertLevel = alertLvl;
 
@@ -65,8 +64,8 @@ namespace WiFiConnect.BusinessLogic
         }
         public DateTime AcknowledgeDateTime
         {
-            get { return _acknowledgedDateTime; }
-            set { _acknowledgedDateTime = value; }
+            get { return _acknowledgeDateTime; }
+            set { _acknowledgeDateTime = value; }
         }
         public int AlertLevel
         {

@@ -9,6 +9,7 @@ using WiFiConnect.BusinessLogic;
 using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,19 +30,16 @@ namespace WiFiConnect
 
         private User _user;
         private Alert[] _alerts;
-
-        
-
+        private List<Alert> _snoozedAlerts;
 
         public DashboardPage()
         {
             this.InitializeComponent();
 
-            //initialized when the page is navigated to
+            //initialized when the page is navigated to - may be trouble when incorporating other pages - move this to navigated to?
             _user = null;
             _alerts = null;
-
-            DisplayAlerts();
+            _snoozedAlerts = new List<Alert>();
 
             lstAlerts.SelectedIndex = 0;
         }
@@ -51,37 +49,49 @@ namespace WiFiConnect
             //TODO: Maybe send just first name as a parameter (unless other properties of the user are used)
             _user = e.Parameter as User;
 
+            LoadJson();
+            DisplayAlerts();
+
             string day = DateTime.Now.DayOfWeek.ToString();
             string firstName = _user.FirstName;
 
             txtWelcome.Text = String.Format("Happy {0} {1}", day, firstName);            
         }
 
-        private  async void DisplayAlerts()
+        private void DisplayAlerts()
         {
-            await LoadJson();
+            bool highPriority = false;
 
             //orders the alerts by the alert level
-            var query = _alerts.OrderByDescending(alert => alert.AlertID).ToArray();
+            var query = _alerts.OrderByDescending(alert => alert.AlertLevel).ToArray();
             _alerts = query;
 
             lstAlerts.Items.Clear();
             foreach (Alert alert in _alerts)
             {
                 lstAlerts.Items.Add(alert);
+                if (alert.AlertLevel == 3)
+                {
+                    highPriority = true;
+                }
             }
+
+            if (highPriority == true)
+            {
+                ellRed.Fill = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
+            }
+
+
         }
 
-        private async Task LoadJson()
+        private void LoadJson()
         {
             //TODO: Temporary web server
-            string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID=0HLFXXL972UO";
+            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", _user.FlowerPotID);
             string alertString;
 
             using (var httpClient = new HttpClient())
             {
-                // var stream =  await httpClient.GetStreamAsync(url);
-                //StreamReader reader = new StreamReader(stream);
 
                 using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
                 {
@@ -111,13 +121,7 @@ namespace WiFiConnect
                 DateTime alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
                 string shortDescription = alertObject.GetNamedString("Short Description");
                 string longDescription = alertObject.GetNamedString("Long Description");
-                //TODO: GET ACKNOWLEDGE DATE TIME - not a valid date right now ------------CHANGE ME BELOW-----
-
-               // if (alertObject.GetNamedString("Acknowledged Timestamp") == null)
-                //{
-
-                //}
-                //DateTime acknowledgeDateTime = DateTime.Parse(alertObject.GetNamedString("Acknowledged Timestamp"));
+                //NOTE: Don;t need to get Acknowledged TimeStamp (only useful for database purposes
                 int alertLevel = Int32.Parse(alertObject.GetNamedString("Level"));
                 //TODO: GET IMAGE - set to null right now
                 //TODO: GET SOUND - set to null right now
@@ -127,41 +131,33 @@ namespace WiFiConnect
                 Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, alertLevel);
                 _alerts[iAlert] = alert;
             }
-         }
+        }
 
         private void OnTagSetupClick(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(TagSetupPage));
         }
 
-        private void OnAcknowledgeAlertClick(object sender, RoutedEventArgs e)
+        private void OnRedButtonClick(object sender, RoutedEventArgs e)
         {
-            Alert alert = (Alert)lstAlerts.SelectedItem;
-            alert.AcknowledgeDateTime = DateTime.Now;
-
-            //----TESTING
-            lstAlerts.Items.Clear();
-            foreach (Alert a in _alerts)
-            {
-                lstAlerts.Items.Add(a);
-            }
+            AcknowledgeAlert();
         }
 
-        private async void OnRedButtonClick(object sender, RoutedEventArgs e)
+        private async void AcknowledgeAlert()
         {
-            //TODO: remove the selected alert - ask for confirmation with dialogue and wav file?
+            //TODO: acknowledge the selected alert - ask for confirmation with dialogue and wav file?
             ContentDialog removeDialog = new ContentDialog()
             {
-                Title = "Removal Confirmation",
+                Title = "Acknowledgement Confirmation",
                 FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
 
                 MaxWidth = this.ActualWidth,
-                PrimaryButtonText = "Remove Alert",
+                PrimaryButtonText = "Acknowledge Alert",
                 SecondaryButtonText = "Cancel",
-                
+
                 Content = new TextBlock
                 {
-                    Text = "Are you sure you would like to delete this alert?",
+                    Text = "Are you sure you would like to acknowledge this alert?",
                     FontSize = 18,
                     FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
                 }
@@ -170,32 +166,46 @@ namespace WiFiConnect
             ContentDialogResult result = await removeDialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+
+                Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
+                string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/acknowledgeAlert.php?alertID={0}", selectedAlert.AlertID);
+
+                using (var httpClient = new HttpClient())
+                {
+                    using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
+                    {
+                    }
+                }
+
+                LoadJson();
+                DisplayAlerts();
             }
         }
 
         private void OnYellowButtonClick(object sender, RoutedEventArgs e)
         {
-            //TODO: Snooze the selected alert - play again in 5 minutes - update acknowledge date time
-
-            //updates the acknowledge date time of the alert - TEMP - Use Sohail's Server
-            Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
-            selectedAlert.AcknowledgeDateTime = DateTime.Now;
-
-            //----TESTING
-
-            lstAlerts.Items.Clear();
-            foreach (Alert a in _alerts)
-            {
-                lstAlerts.Items.Add(a);
-            }
+            SnoozeAlert();
         }
 
+        private void SnoozeAlert()
+        {
+            Alert alert = (Alert)lstAlerts.SelectedItem;
+            alert.AcknowledgeDateTime = DateTime.Now;
+
+            _snoozedAlerts.Add(alert);
+            lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+            DisplayAlerts();
+        }
         private void OnGreenButonClick(object sender, RoutedEventArgs e)
         {
             //TODO: Play wav file
         }
 
+        /// <summary>
+        /// Event Handler for up button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnUpButtonClick(object sender, RoutedEventArgs e)
         {
             if (lstAlerts.SelectedIndex > 0)
@@ -205,6 +215,11 @@ namespace WiFiConnect
             }
         }
 
+        /// <summary>
+        /// Event Handler for down button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnDownButtonClick(object sender, RoutedEventArgs e)
         {
             if (lstAlerts.SelectedIndex < lstAlerts.Items.Count - 1)

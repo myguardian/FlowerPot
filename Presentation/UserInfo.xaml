@@ -11,7 +11,7 @@
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBlock x:Name="txtTitle" Text="User Information" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="48" Margin="0,10,0,0" FontFamily="Agency FB"/>
             <TextBlock x:Name="txtDevInfo" Text="Device Information" TextWrapping="Wrap" Margin="0,15,0,0" TextAlignment="Center" FontFamily="Agency FB" FontSize="24" HorizontalAlignment="Center"/>
-            <TextBox x:Name="txtFPID" Text="FlowerPot ID: 0HLFXXL972UO" FontFamily="Agency FB" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FlowDirection="LeftToRight" PlaceholderText="FlowerPot ID" TextAlignment="Center" Margin="5,15,5,0" MaxLength="100" IsReadOnly="True"/>
+            <TextBox x:Name="txtFPID" Text="0HLFXXL972UO" FontFamily="Agency FB" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FlowDirection="LeftToRight" PlaceholderText="FlowerPot ID" TextAlignment="Center" Margin="5,15,5,0" MaxLength="100" IsReadOnly="True"/>
             <TextBox x:Name="txtTagMgr" Text="" FontFamily="Agency FB" FontSize="20" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FlowDirection="LeftToRight" PlaceholderText="Tag Manager Serial Number" TextAlignment="Center" Margin="5,10,5,0" MaxLength="100"/>
             <TextBlock x:Name="txtUserInfo" Text="Personal Information" TextWrapping="Wrap" Margin="0,15,0,0" FontSize="24" FontFamily="Agency FB" TextAlignment="Center" HorizontalAlignment="Center"/>
             <TextBox x:Name="txtFirstName" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" TextAlignment="Center" Margin="0,15,0,0" PlaceholderText="First Name" FontFamily="Agency FB" FontSize="20" MaxLength="25"/>
