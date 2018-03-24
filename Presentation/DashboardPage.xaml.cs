@@ -27,9 +27,12 @@ namespace WiFiConnect
     /// </summary>
     public sealed partial class DashboardPage : Page
     {
+        //--------------------------
+        //                await Task.Delay(5000);
+        //--------------------------
 
         private User _user;
-        private Alert[] _alerts;
+        private List<Alert> _alerts;
         private List<Alert> _snoozedAlerts;
 
         public DashboardPage()
@@ -63,7 +66,7 @@ namespace WiFiConnect
             bool highPriority = false;
 
             //orders the alerts by the alert level
-            var query = _alerts.OrderByDescending(alert => alert.AlertLevel).ToArray();
+            var query = _alerts.OrderByDescending(alert => alert.AlertLevel).ToList();
             _alerts = query;
 
             lstAlerts.Items.Clear();
@@ -107,7 +110,7 @@ namespace WiFiConnect
             //stores all of the alerts into one array
             JsonArray alertArray = jsonObj.GetNamedArray("Alerts");
 
-            _alerts = new Alert[alertArray.Count];
+            _alerts = new List<Alert>();
 
             //loops through all of the alerts in the JSON object
             for (uint iAlert = 0; iAlert < alertArray.Count; iAlert++)
@@ -121,15 +124,24 @@ namespace WiFiConnect
                 DateTime alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
                 string shortDescription = alertObject.GetNamedString("Short Description");
                 string longDescription = alertObject.GetNamedString("Long Description");
-                //NOTE: Don;t need to get Acknowledged TimeStamp (only useful for database purposes
+
+                DateTime acknowledgeDateTime;
+                if (alertObject.GetNamedString("Acknowledged Timestamp").ToString().Equals("0000-00-00 00:00:00"))
+                {
+                    acknowledgeDateTime = DateTime.Parse("1001-01-01 00:00:00");
+                } else
+                {
+                    acknowledgeDateTime = DateTime.Parse(alertObject.GetNamedString("Acknowledged Timestamp"));
+                }
+
                 int alertLevel = Int32.Parse(alertObject.GetNamedString("Level"));
                 //TODO: GET IMAGE - set to null right now
                 //TODO: GET SOUND - set to null right now
 
                 //add the alert into an array of alerts
                 //TODO: Temporarily adding the alert date time in place of the acknowledge date time
-                Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, alertLevel);
-                _alerts[iAlert] = alert;
+                Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, acknowledgeDateTime, alertLevel);
+                _alerts.Add(alert);
             }
         }
 
@@ -179,6 +191,7 @@ namespace WiFiConnect
 
                 LoadJson();
                 DisplayAlerts();
+                lstAlerts.SelectedIndex++;
             }
         }
 
@@ -193,8 +206,10 @@ namespace WiFiConnect
             alert.AcknowledgeDateTime = DateTime.Now;
 
             _snoozedAlerts.Add(alert);
-            lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+            _alerts.Remove(alert);
+
             DisplayAlerts();
+            lstAlerts.SelectedIndex++;
         }
         private void OnGreenButonClick(object sender, RoutedEventArgs e)
         {

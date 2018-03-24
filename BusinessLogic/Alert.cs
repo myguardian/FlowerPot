@@ -20,7 +20,7 @@ namespace WiFiConnect.BusinessLogic
         private string _image;
         private string _sound;
 
-        public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, int alertLvl)
+        public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, DateTime ackDT, int alertLvl)
         {
             _alertID = alertID;
             _flowerpotID = fpID;
@@ -28,7 +28,7 @@ namespace WiFiConnect.BusinessLogic
             _shortDescription = shortDesc;
             _longDescription = longDesc;
 
-            _acknowledgeDateTime = DateTime.Parse("1001-01-01 00:00:00");
+            _acknowledgeDateTime = ackDT;
 
             _alertLevel = alertLvl;
 
