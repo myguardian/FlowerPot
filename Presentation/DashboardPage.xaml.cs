@@ -61,6 +61,10 @@ namespace WiFiConnect
         {
             await LoadJson();
 
+            //orders the alerts by the alert level
+            var query = _alerts.OrderByDescending(alert => alert.AlertID).ToArray();
+            _alerts = query;
+
             lstAlerts.Items.Clear();
             foreach (Alert alert in _alerts)
             {
@@ -163,15 +167,11 @@ namespace WiFiConnect
                 }
             };
 
-            await removeDialog.ShowAsync();
-
-            removeDialog.PrimaryButtonClick += ContentDialog_PrimaryButtonClick;
-                
-        }
-
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+            ContentDialogResult result = await removeDialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                lstAlerts.Items.RemoveAt(lstAlerts.SelectedIndex);
+            }
         }
 
         private void OnYellowButtonClick(object sender, RoutedEventArgs e)
@@ -179,10 +179,11 @@ namespace WiFiConnect
             //TODO: Snooze the selected alert - play again in 5 minutes - update acknowledge date time
 
             //updates the acknowledge date time of the alert - TEMP - Use Sohail's Server
-            Alert alert = (Alert)lstAlerts.SelectedItem;
-            alert.AcknowledgeDateTime = DateTime.Now;
+            Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
+            selectedAlert.AcknowledgeDateTime = DateTime.Now;
 
             //----TESTING
+
             lstAlerts.Items.Clear();
             foreach (Alert a in _alerts)
             {
@@ -192,7 +193,7 @@ namespace WiFiConnect
 
         private void OnGreenButonClick(object sender, RoutedEventArgs e)
         {
-
+            //TODO: Play wav file
         }
 
         private void OnUpButtonClick(object sender, RoutedEventArgs e)
