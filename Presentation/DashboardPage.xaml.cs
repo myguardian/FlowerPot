@@ -46,8 +46,6 @@ namespace WiFiConnect
             _alerts = null;
             _snoozedAlerts = new List<Alert>();
             _sound = new MediaElement();
-
-            lstAlerts.SelectedIndex = 0;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -57,6 +55,8 @@ namespace WiFiConnect
 
             LoadJson();
             DisplayAlerts();
+
+            lstAlerts.SelectedIndex = 0;
 
             string day = DateTime.Now.DayOfWeek.ToString();
             string firstName = _user.FirstName;
