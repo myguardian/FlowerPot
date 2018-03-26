@@ -27,6 +27,7 @@ namespace WiFiConnect
     /// </summary>
     public sealed partial class DashboardPage : Page
     {
+
         //--------------------------
         //                await Task.Delay(5000);
         //--------------------------
@@ -34,15 +35,17 @@ namespace WiFiConnect
         private User _user;
         private List<Alert> _alerts;
         private List<Alert> _snoozedAlerts;
+        private MediaElement _sound;
 
         public DashboardPage()
         {
             this.InitializeComponent();
 
-            //initialized when the page is navigated to - may be trouble when incorporating other pages - move this to navigated to?
+            //TODO: initialized when the page is navigated to - may be trouble when incorporating other pages - move this to navigated to?
             _user = null;
             _alerts = null;
             _snoozedAlerts = new List<Alert>();
+            _sound = new MediaElement();
 
             lstAlerts.SelectedIndex = 0;
         }
@@ -157,7 +160,10 @@ namespace WiFiConnect
 
         private async void AcknowledgeAlert()
         {
-            //TODO: acknowledge the selected alert - ask for confirmation with dialogue and wav file?
+
+            _sound = await PlaySound("DeleteConfirmSample");
+            _sound.Play();
+
             ContentDialog removeDialog = new ContentDialog()
             {
                 Title = "Acknowledgement Confirmation",
@@ -191,8 +197,16 @@ namespace WiFiConnect
 
                 LoadJson();
                 DisplayAlerts();
-                lstAlerts.SelectedIndex++;
+
+                //if it is the last alert, do not increment
+                if (lstAlerts.Items.Count > 0)
+                {
+                    lstAlerts.SelectedIndex++; 
+                }
+               
             }
+
+            _sound.Stop();
         }
 
         private void OnYellowButtonClick(object sender, RoutedEventArgs e)
@@ -200,7 +214,7 @@ namespace WiFiConnect
             SnoozeAlert();
         }
 
-        private void SnoozeAlert()
+        private async void SnoozeAlert()
         {
             Alert alert = (Alert)lstAlerts.SelectedItem;
             alert.AcknowledgeDateTime = DateTime.Now;
@@ -209,13 +223,31 @@ namespace WiFiConnect
             _alerts.Remove(alert);
 
             DisplayAlerts();
-            lstAlerts.SelectedIndex++;
+
+            //if it is the last alert, dont increment
+            if (lstAlerts.Items.Count > 0)
+            {
+                lstAlerts.SelectedIndex++; 
+            }
+
+            _sound = await PlaySound("SnoozeSample");
+            _sound.Play();
         }
-        private void OnGreenButonClick(object sender, RoutedEventArgs e)
+        private async void OnGreenButonClick(object sender, RoutedEventArgs e)
         {
-            //TODO: Play wav file
+            _sound = await PlaySound("AlertSample");
+            _sound.Play();
         }
 
+        private async Task<MediaElement> PlaySound(string wavResource)
+        {
+            Windows.Storage.StorageFolder folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets\\Sound");
+            Windows.Storage.StorageFile file = await folder.GetFileAsync(String.Format("{0}.wav", wavResource));
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            _sound.SetSource(stream, file.ContentType);
+
+            return _sound;
+        }
         /// <summary>
         /// Event Handler for up button click
         /// </summary>

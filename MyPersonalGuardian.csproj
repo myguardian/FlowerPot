@@ -126,6 +126,8 @@
     <None Include="WiFiConnect_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Sound\AlertSample.wav" />
+    <Content Include="Assets\Sound\DeleteConfirmSample.wav" />
     <Content Include="Assets\FlowerPot.png" />
     <Content Include="Assets\open_1bar.png" />
     <Content Include="Assets\open_2bar.png" />
@@ -139,6 +141,7 @@
     <Content Include="Assets\secure_5bar.png" />
     <Content Include="Assets\Sketch.png" />
     <Content Include="Assets\smalltile-sdk.png" />
+    <Content Include="Assets\Sound\SnoozeSample.wav" />
     <Content Include="Assets\splash-sdk.png" />
     <Content Include="Assets\squaretile-sdk.png" />
     <Content Include="Assets\storelogo-sdk.png" />
