@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="MyPersonalGuardian.Presentation.AlertsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyPersonalGuardian.Presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="Black">
+
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
+            <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Margin="0,20,0,0" FontFamily="Agency FB" Foreground="White"/>
+            <ListView x:Name="lstAlerts" Height="370" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="10" Foreground="White">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:Name="AlertListViewItem">
+                        <StackPanel Orientation="Vertical" >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="_txtAlertID" Text="{Binding AlertID}" FontFamily="Agency FB" Margin="0,0,25,0"/>
+                                <TextBlock x:Name="_txtFlowerpotID" Text="{Binding FlowerpotID}" FontFamily="Agency FB"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="_txtAlertDateTime" Text="{Binding AlertDateTime}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                                <TextBlock x:Name="_txtAcknowledgeDateTime" Text="{Binding AcknowledgeDateTime}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                                <TextBlock x:Name="_txtShortDescription" Text="{Binding ShortDescription}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock x:Name="_txtLongDescription" Text="{Binding LongDescription}" FontFamily="Agency FB"/>
+                                <TextBlock x:Name="_txtAlertLevel" Text="{Binding AlertLevel}" FontFamily="Agency FB"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <StackPanel/>
+            </ListView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnRed" Content="Acknowledge Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnRedButtonClick" Background="Red" Foreground="Black"/>
+                    <Ellipse x:Name="ellRed" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Stroke="Red" Margin="0,24,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnYellow" Content="Snooze Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnYellowButtonClick" Background="#FFF3FF00" Foreground="Black" Margin="25,0,25,0"/>
+                    <Ellipse x:Name="ellYellow" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Stroke="#FFF3FF00" Margin="0,25,0,0"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnGreen" Content="Play Alert" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="20" FontFamily="Agency FB" Click="OnGreenButonClick" Background="#FF00FF1D" Foreground="Black"/>
+                    <Ellipse x:Name="ellGreen" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="#FF00FF1D" Fill="Black" Width="100" Margin="0,25,0,0"/>
+                </StackPanel>
+                <StackPanel Margin="25,0,0,0" VerticalAlignment="Center">
+                    <Button x:Name="btnUp" Content="Up" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,15" Click="OnUpButtonClick" Foreground="White" Background="#FF484444"/>
+                    <Button x:Name="btnDown" Content="Down" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15,0,0" Click="OnDownButtonClick" Foreground="White" Background="#FF484444"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Page>

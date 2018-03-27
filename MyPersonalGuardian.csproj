@@ -96,9 +96,13 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="BusinessLogic\Alert.cs" />
+    <Compile Include="Presentation\AlertsPage.xaml.cs">
+      <DependentUpon>AlertsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\DashboardPage.xaml.cs">
       <DependentUpon>DashboardPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\NavMenuItem.cs" />
     <Compile Include="Presentation\TagSetupPage.xaml.cs">
       <DependentUpon>TagSetupPage.xaml</DependentUpon>
     </Compile>
@@ -161,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Presentation\AlertsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\DashboardPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
