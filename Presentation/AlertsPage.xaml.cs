@@ -34,6 +34,11 @@ namespace MyPersonalGuardian.Presentation
         private const int GREEN_BUTTON_PIN = 5;
         private const int YELLOW_BUTTON_PIN = 6;
         private const int RED_BUTTON_PIN = 13;
+        private const int GREEN_LED_PIN = 16;
+        private const int YELOW_LED_PIN = 20;
+        private const int RED_LED_PIN = 21;
+        private const int UP_BUTTON_PIN = 27;
+        private const int DOWN_BUTTON_PIN = 17;
 
         private User _user;
         private List<Alert> _alerts;
@@ -43,6 +48,12 @@ namespace MyPersonalGuardian.Presentation
         private GpioPin _greenButtonPin;
         private GpioPin _yellowButtonPin;
         private GpioPin _redButtonPin;
+        private GpioPin _greenLedPin;
+        private GpioPin _yellowLedPin;
+        private GpioPin _redLedPin;
+        private GpioPin _upButtonPin;
+        private GpioPin _downButtonPin;
+        private GpioPinValue _ledPinValue = GpioPinValue.High;
 
         public AlertsPage()
         {
@@ -89,7 +100,23 @@ namespace MyPersonalGuardian.Presentation
             _yellowButtonPin = gpio.OpenPin(YELLOW_BUTTON_PIN);
             _redButtonPin = gpio.OpenPin(RED_BUTTON_PIN);
 
-            // Check if input pull-up resistors are supported ------------------------------------COMMENT ME OUT
+            _greenLedPin = gpio.OpenPin(GREEN_LED_PIN);
+            _yellowLedPin = gpio.OpenPin(YELOW_LED_PIN);
+            _redLedPin = gpio.OpenPin(RED_LED_PIN);
+
+            _upButtonPin = gpio.OpenPin(UP_BUTTON_PIN);
+            _downButtonPin = gpio.OpenPin(DOWN_BUTTON_PIN);
+
+            // Initialize LED to the OFF state by first writing a HIGH value
+            // We write HIGH because the LED is wired in a active LOW configuration
+            _greenLedPin.Write(GpioPinValue.Low);
+            _greenLedPin.SetDriveMode(GpioPinDriveMode.Output);
+            _yellowLedPin.Write(GpioPinValue.Low);
+            _yellowLedPin.SetDriveMode(GpioPinDriveMode.Output);
+            _redLedPin.Write(GpioPinValue.Low);
+            _redLedPin.SetDriveMode(GpioPinDriveMode.Output);
+
+            // Check if input pull-up resistors are supported ------------------------------------REFACTOR ME LATER - check for uneccessary code
             if (_greenButtonPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
                 _greenButtonPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
             else
@@ -105,36 +132,62 @@ namespace MyPersonalGuardian.Presentation
             else
                 _redButtonPin.SetDriveMode(GpioPinDriveMode.Input);
 
+            if (_upButtonPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                _upButtonPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else
+                _upButtonPin.SetDriveMode(GpioPinDriveMode.Input);
+
+            if (_downButtonPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                _downButtonPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else
+                _downButtonPin.SetDriveMode(GpioPinDriveMode.Input);
+
             _greenButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _yellowButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _redButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+            _upButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+            _downButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
 
             _greenButtonPin.ValueChanged += OnButtonPress;
             _yellowButtonPin.ValueChanged += OnButtonPress;
             _redButtonPin.ValueChanged += OnButtonPress;
+            _upButtonPin.ValueChanged += OnButtonPress;
+            _downButtonPin.ValueChanged += OnButtonPress;
         }
 
         private void OnButtonPress(GpioPin sender, GpioPinValueChangedEventArgs e)
         {
-            // toggle the state of the LED every time the button is pressed
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 if (e.Edge == GpioPinEdge.FallingEdge)
                 {
+                    _ledPinValue = (_ledPinValue == GpioPinValue.Low) ? GpioPinValue.High : GpioPinValue.Low;
+
                     if (sender == _greenButtonPin)
                     {
                         txtWelcome.Text = "Green Pressed";
+                        _greenLedPin.Write();
                         PlayAlert();
                     }
                     else if (sender == _yellowButtonPin)
                     {
                         txtWelcome.Text = "Yellow Pressed";
+                        _yellowLedPin.Write(_ledPinValue);
                         SnoozeAlert();
                     }
                     else if (sender == _redButtonPin)
                     {
                         txtWelcome.Text = "Red Pressed";
-                        RemoveAlert();
+                        _redLedPin.Write(_ledPinValue);
+                        AcknowledgeAlert();
+                    }
+                    else if (sender == _upButtonPin)
+                    {
+                        GoUp();
+                    }
+                    else if (sender == _downButtonPin)
+                    {
+                        GoDown();
                     }
                 }
             });
@@ -244,7 +297,7 @@ namespace MyPersonalGuardian.Presentation
             this.Frame.Navigate(typeof(TagSetupPage));
         }
 
-        private async void RemoveAlert()
+        private async void AcknowledgeAlert()
         {
 
             _sound = await PlaySound("DeleteConfirmSample");
@@ -330,7 +383,7 @@ namespace MyPersonalGuardian.Presentation
             return _sound;
         }
         
-        private void OnUpButtonClick(object sender, RoutedEventArgs e)
+        private void GoUp()
         {
             if (lstAlerts.SelectedIndex > 0)
             {
@@ -339,7 +392,7 @@ namespace MyPersonalGuardian.Presentation
             }
         }
 
-        private void OnDownButtonClick(object sender, RoutedEventArgs e)
+        private void GoDown()
         {
             if (lstAlerts.SelectedIndex < lstAlerts.Items.Count - 1)
             {
