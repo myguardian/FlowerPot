@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using MyPersonalGuardian.Presentation;
 using System;
 using System.Collections.Generic;
 using WiFiConnect;
@@ -32,7 +33,7 @@ namespace SDKTemplate
         private void OnSetupClick(object sender, RoutedEventArgs e)
         {
             //this.Frame.Navigate(typeof(UserInfo)); //use for testing
-            this.Frame.Navigate(typeof(UserInfo));
+            this.Frame.Navigate(typeof(AlertsPage));
         }
     }
 }

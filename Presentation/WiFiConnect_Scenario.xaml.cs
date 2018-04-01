@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 
+using MyPersonalGuardian.Presentation;
 using SDKTemplate;
 using System;
 using System.Collections.ObjectModel;
@@ -36,6 +37,13 @@ namespace WiFiConnect
         public WiFiConnect_Scenario()
         {
             this.InitializeComponent();
+
+            //CheckConnection();
+        }
+
+        private void CheckConnection()
+        {
+            WifiToEthernetAsync();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -333,33 +341,33 @@ namespace WiFiConnect
 
                 if (result.Status == TetheringOperationStatus.Success)
                 {
-                    //dialog.Content = new TextBlock -------------------------- UNCOMMENT ME LATER
-                    //{
-                       //Text = "Connection successful, please connect tag manager",
-                       //FontSize = 18,
-                    //};
+                    dialog.Content = new TextBlock
+                    {
+                       Text = "Connection successful, please connect tag manager",
+                       FontSize = 18,
+                    };
                     
                 }
                 else
                 {
-                    //dialog.Content = new TextBlock ----------------------- UNCOMMENT ME LATER
-                    //{
-                        //Text = "Connection Failed",
-                        //FontSize = 18,
-                    //};
+                    dialog.Content = new TextBlock
+                    {
+                        Text = "Connection Failed",
+                        FontSize = 18,
+                    };
                 }
 
                 //TODO: temporary
-                dialog.Content = new TextBlock
-                {
-                    Text = "No Tag Manager Detected, Proceed for now",
-                    FontSize = 18,
-                    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
-                };
+                //dialog.Content = new TextBlock
+                //{
+                //    Text = "No Tag Manager Detected, Proceed for now",
+                //    FontSize = 18,
+                //    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+                //};
 
                 await dialog.ShowAsync();
 
-                rootPage.Frame.Navigate(typeof(UserInfo));
+                rootPage.Frame.Navigate(typeof(AlertsPage));
             }
         }
 

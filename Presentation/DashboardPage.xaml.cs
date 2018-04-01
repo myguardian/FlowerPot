@@ -20,7 +20,7 @@ namespace WiFiConnect
             _user = e.Parameter as User;
             _frmContent.Navigate(typeof(AlertsPage), _user);
         }
-            private void OnContentFrameNavigated(object sender, NavigationEventArgs e)
+        private void OnContentFrameNavigated(object sender, NavigationEventArgs e)
         {
 
             if (e.SourcePageType == typeof(AlertsPage))
