@@ -40,11 +40,6 @@ namespace MyPersonalGuardian.Presentation
         private const int UP_BUTTON_PIN = 27;
         private const int DOWN_BUTTON_PIN = 17;
 
-        private User _user;
-        private List<Alert> _alerts;
-        private List<Alert> _snoozedAlerts;
-        private MediaElement _sound;
-
         private GpioPin _greenButtonPin;
         private GpioPin _yellowButtonPin;
         private GpioPin _redButtonPin;
@@ -53,7 +48,13 @@ namespace MyPersonalGuardian.Presentation
         private GpioPin _redLedPin;
         private GpioPin _upButtonPin;
         private GpioPin _downButtonPin;
-        private GpioPinValue _ledPinValue = GpioPinValue.Low;
+
+        private User _user;
+        private List<Alert> _alerts;
+        private List<Alert> _snoozedAlerts;
+        private MediaElement _sound;
+        private ContentDialog _removeAlertDialog;
+        private bool _dialogueOpen;
 
         public AlertsPage()
         {
@@ -64,6 +65,8 @@ namespace MyPersonalGuardian.Presentation
             _alerts = null;
             _snoozedAlerts = new List<Alert>();
             _sound = new MediaElement();
+
+            _dialogueOpen = false;
 
             txtNoAlerts.Visibility = Visibility.Collapsed;
             lstAlerts.Visibility = Visibility.Visible;
@@ -164,26 +167,48 @@ namespace MyPersonalGuardian.Presentation
 
                     if (sender == _greenButtonPin)
                     {
-                        txtWelcome.Text = "Green Pressed";  
-                        PlayAlert();
+                        if (_dialogueOpen == false)
+                        {
+                            PlayAlert();
+                        }
+                        else
+                        {
+                            ConfirmRemoveAlert();
+                            _removeAlertDialog.Hide();
+                        }
                     }
                     else if (sender == _yellowButtonPin)
                     {
-                        txtWelcome.Text = "Yellow Pressed";
-                        SnoozeAlert();
+                        if (_dialogueOpen == false)
+                        {
+                            SnoozeAlert();
+                        }
                     }
                     else if (sender == _redButtonPin)
                     {
-                        txtWelcome.Text = "Red Pressed";
-                        RemoveAlert();
+                        if (_dialogueOpen == false)
+                        {
+                            RemoveAlert();
+                        } 
+                        else
+                        {
+                            _removeAlertDialog.Hide();
+                            _redLedPin.Write(GpioPinValue.Low);
+                        }
                     }
                     else if (sender == _upButtonPin)
                     {
-                        GoUp();
+                        if (_dialogueOpen == false)
+                        {
+                            GoUp();
+                        }
                     }
                     else if (sender == _downButtonPin)
                     {
-                        GoDown();
+                        if (_dialogueOpen == false)
+                        {
+                            GoDown();
+                        }
                     }
                 }
             });
@@ -296,52 +321,62 @@ namespace MyPersonalGuardian.Presentation
 
         private async void RemoveAlert()
         {
-            _redLedPin.Write(GpioPinValue.High);
-            _sound = await PlaySound("DeleteConfirmSample");
-            _sound.Play();
-
-            ContentDialog removeDialog = new ContentDialog()
+            if (_dialogueOpen == false)
             {
-                Title = "Acknowledgement Confirmation",
-                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
+                _dialogueOpen = true;
 
-                MaxWidth = this.ActualWidth,
-                PrimaryButtonText = "Acknowledge Alert",
-                SecondaryButtonText = "Cancel",
+                _redLedPin.Write(GpioPinValue.High);
+                _sound = await PlaySound("DeleteConfirmSample");
+                _sound.Play();
 
-                Content = new TextBlock
+                _removeAlertDialog = new ContentDialog()
                 {
-                    Text = "Are you sure you would like to acknowledge this alert?",
-                    FontSize = 18,
+                    Title = "Remove Confirmation",
                     FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
-                }
-            };
 
-            ContentDialogResult result = await removeDialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
+                    MaxWidth = this.ActualWidth,
+                    PrimaryButtonText = "Remove Alert",
+                    SecondaryButtonText = "Cancel",
 
-                Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
-                string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/acknowledgeAlert.php?alertID={0}", selectedAlert.AlertID);
-
-                using (var httpClient = new HttpClient())
-                {
-                    using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
+                    Content = new TextBlock
                     {
+                        Text = "Are you sure you would like to remove this alert?",
+                        FontSize = 18,
+                        FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
                     }
-                }
+                };
 
-                //if it is the last alert, do not increment
-                if (lstAlerts.Items.Count > 0)
+                ContentDialogResult result = await _removeAlertDialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
                 {
-                        LoadJson();
-                        DisplayAlerts();
-                        lstAlerts.SelectedIndex++;
+                    ConfirmRemoveAlert();
                 }
 
+                _dialogueOpen = false;
+                _sound.Stop();
+            }
+        }
+
+        private void ConfirmRemoveAlert()
+        {
+            Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
+            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/acknowledgeAlert.php?alertID={0}", selectedAlert.AlertID);
+
+            using (var httpClient = new HttpClient())
+            {
+                using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
+                {
+                }
             }
 
-            _sound.Stop();
+            //if it is the last alert, do not increment
+            if (lstAlerts.Items.Count > 0)
+            {
+                LoadJson();
+                DisplayAlerts();
+                lstAlerts.SelectedIndex++;
+            }
+
             _redLedPin.Write(GpioPinValue.Low);
         }
 
@@ -358,8 +393,8 @@ namespace MyPersonalGuardian.Presentation
             //if it is the last alert, dont increment
             if (lstAlerts.Items.Count > 0)
             {
-                    DisplayAlerts();
-                    lstAlerts.SelectedIndex++;
+                DisplayAlerts();
+                lstAlerts.SelectedIndex++;
             }
 
 
@@ -375,6 +410,7 @@ namespace MyPersonalGuardian.Presentation
             _sound = await PlaySound("AlertSample");
             _sound.Play();
             _greenLedPin.Write(GpioPinValue.Low);
+
         }
 
         private async Task<MediaElement> PlaySound(string wavResource)
@@ -389,7 +425,7 @@ namespace MyPersonalGuardian.Presentation
         
         private void GoUp()
         {
-            txtWelcome.Text = "Up Pressed";
+
             if (lstAlerts.SelectedIndex > 0)
             {
                 lstAlerts.SelectedIndex--;
@@ -399,12 +435,12 @@ namespace MyPersonalGuardian.Presentation
 
         private void GoDown()
         {
-            txtWelcome.Text = "Dpwn Pressed";
+
             if (lstAlerts.SelectedIndex < lstAlerts.Items.Count - 1)
             {
                 lstAlerts.SelectedIndex++;
                 lstAlerts.ScrollIntoView(lstAlerts.SelectedItem);
             }
         }
-}
+    }
 }
