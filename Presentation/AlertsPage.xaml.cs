@@ -53,7 +53,7 @@ namespace MyPersonalGuardian.Presentation
         private GpioPin _redLedPin;
         private GpioPin _upButtonPin;
         private GpioPin _downButtonPin;
-        private GpioPinValue _ledPinValue = GpioPinValue.High;
+        private GpioPinValue _ledPinValue = GpioPinValue.Low;
 
         public AlertsPage()
         {
@@ -161,25 +161,21 @@ namespace MyPersonalGuardian.Presentation
             {
                 if (e.Edge == GpioPinEdge.FallingEdge)
                 {
-                    _ledPinValue = (_ledPinValue == GpioPinValue.Low) ? GpioPinValue.High : GpioPinValue.Low;
 
                     if (sender == _greenButtonPin)
                     {
-                        txtWelcome.Text = "Green Pressed";
-                        _greenLedPin.Write();
+                        txtWelcome.Text = "Green Pressed";  
                         PlayAlert();
                     }
                     else if (sender == _yellowButtonPin)
                     {
                         txtWelcome.Text = "Yellow Pressed";
-                        _yellowLedPin.Write(_ledPinValue);
                         SnoozeAlert();
                     }
                     else if (sender == _redButtonPin)
                     {
                         txtWelcome.Text = "Red Pressed";
-                        _redLedPin.Write(_ledPinValue);
-                        AcknowledgeAlert();
+                        RemoveAlert();
                     }
                     else if (sender == _upButtonPin)
                     {
@@ -192,6 +188,7 @@ namespace MyPersonalGuardian.Presentation
                 }
             });
         }
+
         private void DisplayAlerts()
         {
 
@@ -230,7 +227,7 @@ namespace MyPersonalGuardian.Presentation
         private void LoadJson()
         {
             //TODO: Temporary web server
-            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", "0HLFXXL972UO"/*_user.FlowerPotID*/);
+            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", "79B41758C"/*_user.FlowerPotID*/);
             string alertString;
 
             using (var httpClient = new HttpClient())
@@ -297,9 +294,9 @@ namespace MyPersonalGuardian.Presentation
             this.Frame.Navigate(typeof(TagSetupPage));
         }
 
-        private async void AcknowledgeAlert()
+        private async void RemoveAlert()
         {
-
+            _redLedPin.Write(GpioPinValue.High);
             _sound = await PlaySound("DeleteConfirmSample");
             _sound.Play();
 
@@ -345,10 +342,13 @@ namespace MyPersonalGuardian.Presentation
             }
 
             _sound.Stop();
+            _redLedPin.Write(GpioPinValue.Low);
         }
 
         private async void SnoozeAlert()
         {
+            _yellowLedPin.Write(GpioPinValue.High);
+
             Alert alert = (Alert)lstAlerts.SelectedItem;
             alert.AcknowledgeDateTime = DateTime.Now;
 
@@ -365,12 +365,16 @@ namespace MyPersonalGuardian.Presentation
 
             _sound = await PlaySound("SnoozeSample");
             _sound.Play();
+
+            _yellowLedPin.Write(GpioPinValue.Low);
         }
 
         private async void PlayAlert()
         {
+            _greenLedPin.Write(GpioPinValue.High);
             _sound = await PlaySound("AlertSample");
             _sound.Play();
+            _greenLedPin.Write(GpioPinValue.Low);
         }
 
         private async Task<MediaElement> PlaySound(string wavResource)
@@ -385,6 +389,7 @@ namespace MyPersonalGuardian.Presentation
         
         private void GoUp()
         {
+            txtWelcome.Text = "Up Pressed";
             if (lstAlerts.SelectedIndex > 0)
             {
                 lstAlerts.SelectedIndex--;
@@ -394,6 +399,7 @@ namespace MyPersonalGuardian.Presentation
 
         private void GoDown()
         {
+            txtWelcome.Text = "Dpwn Pressed";
             if (lstAlerts.SelectedIndex < lstAlerts.Items.Count - 1)
             {
                 lstAlerts.SelectedIndex++;

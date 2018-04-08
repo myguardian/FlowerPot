@@ -23,7 +23,6 @@ namespace SDKTemplate
         public MainPage()
         {
             this.InitializeComponent();
-
             //TODO: Determine if user has setup their device before, go right to wifi connection if they have (and then skip
             //the user information form. Give them an option to go to the main screen and setup as a new device if they wish - 
             //maybe do that in the dashboard page (a log out or reset feature?)
