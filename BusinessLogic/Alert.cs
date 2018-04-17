@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace WiFiConnect.BusinessLogic
 {
@@ -20,6 +21,8 @@ namespace WiFiConnect.BusinessLogic
         private string _image;
         private string _sound;
 
+        private DispatcherTimer _snoozeTimer;
+
         public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, DateTime ackDT, int alertLvl)
         {
             _alertID = alertID;
@@ -27,14 +30,20 @@ namespace WiFiConnect.BusinessLogic
             _alertDateTime = alertDT;
             _shortDescription = shortDesc;
             _longDescription = longDesc;
-
             _acknowledgeDateTime = ackDT;
-
             _alertLevel = alertLvl;
 
             //TODO: Temporary
             _image = null;
             _sound = null;
+
+            _snoozeTimer = new DispatcherTimer();
+            _snoozeTimer.Tick += OnSnoozeTimerTick;
+        }
+
+        private void OnSnoozeTimerTick(object sender, object e)
+        {
+            throw new NotImplementedException();
         }
 
         public int AlertID
@@ -73,9 +82,10 @@ namespace WiFiConnect.BusinessLogic
             set { _alertLevel = value; }
         }
 
-        public string toString()
+        public DispatcherTimer SnoozeTimer
         {
-            return _shortDescription;
+            get { return _snoozeTimer; }
+            set { _snoozeTimer = value; }
         }
     }
 }

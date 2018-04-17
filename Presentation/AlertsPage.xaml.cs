@@ -55,6 +55,7 @@ namespace MyPersonalGuardian.Presentation
         private MediaElement _sound;
         private ContentDialog _removeAlertDialog;
         private bool _dialogueOpen;
+        private DispatcherTimer _pullFromJSONTimer;
 
         public AlertsPage()
         {
@@ -65,11 +66,20 @@ namespace MyPersonalGuardian.Presentation
             _alerts = null;
             _snoozedAlerts = new List<Alert>();
             _sound = new MediaElement();
-
             _dialogueOpen = false;
 
-            txtNoAlerts.Visibility = Visibility.Collapsed;
-            lstAlerts.Visibility = Visibility.Visible;
+            _pullFromJSONTimer = new DispatcherTimer();
+            _pullFromJSONTimer.Tick += UpdateAlerts;
+            _pullFromJSONTimer.Interval = TimeSpan.FromSeconds(10);
+
+            txtNoAlerts.Visibility = Visibility.Visible;
+            lstAlerts.Visibility = Visibility.Collapsed;
+        }
+
+        private void UpdateAlerts(object sender, object e)
+        {
+            LoadJSON();
+            DisplayAlerts();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -77,8 +87,10 @@ namespace MyPersonalGuardian.Presentation
             //TODO: Maybe send just first name as a parameter (unless other properties of the user are used)
             //_user = e.Parameter as User;
 
-            LoadJson();
+            _pullFromJSONTimer.Start();
+            LoadJSON();
             DisplayAlerts();
+
             InitGPIO();
 
             lstAlerts.SelectedIndex = 0;
@@ -216,10 +228,10 @@ namespace MyPersonalGuardian.Presentation
 
         private void DisplayAlerts()
         {
-
             if (_alerts != null && _alerts.Count > 0)
             {
                 lstAlerts.Visibility = Visibility.Visible;
+                txtNoAlerts.Text = "There are no alerts to be displayed";
                 txtNoAlerts.Visibility = Visibility.Collapsed;
 
                 bool highPriority = false;
@@ -249,10 +261,11 @@ namespace MyPersonalGuardian.Presentation
             }
         }
 
-        private void LoadJson()
+        private void LoadJSON()
         {
             //TODO: Temporary web server
-            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", "79B41758C"/*_user.FlowerPotID*/);
+            //string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", "79B41758C"/*_user.FlowerPotID*/);
+            string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/alerts.json";
             string alertString;
 
             using (var httpClient = new HttpClient())
@@ -283,6 +296,7 @@ namespace MyPersonalGuardian.Presentation
 
                     //extract information from each alert
                     int alertID = Int32.Parse(alertObject.GetNamedString("Alert ID"));
+
                     string flowerpotID = alertObject.GetNamedString("Flowerpot ID");
                     DateTime alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
                     string shortDescription = alertObject.GetNamedString("Short Description");
@@ -304,13 +318,26 @@ namespace MyPersonalGuardian.Presentation
 
                     //add the alert into an array of alerts
                     //TODO: Temporarily adding the alert date time in place of the acknowledge date time
-                    Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, acknowledgeDateTime, alertLevel);
-                    _alerts.Add(alert);
+                    bool match = false;
+
+                    for (int iSnoozedAlert = 0; iSnoozedAlert < _snoozedAlerts.Count; iSnoozedAlert++)
+                    {
+                        if (_snoozedAlerts[iSnoozedAlert].AlertID == alertID)
+                        {
+                            match = true;
+                        }
+                    }
+
+                    if (match == false)
+                    {
+                        Alert alert = new Alert(alertID, flowerpotID, alertDateTime, shortDescription, longDescription, acknowledgeDateTime, alertLevel);
+                        _alerts.Add(alert);
+                    }
                 }
-            } catch (Exception e)
+            } catch (Exception ex)
             {
-               // lstAlerts.Visibility = Visibility.Collapsed;
-                
+               lstAlerts.Visibility = Visibility.Collapsed;
+                txtNoAlerts.Text = "Error Loading Alerts"; 
             }
         }
 
@@ -335,8 +362,8 @@ namespace MyPersonalGuardian.Presentation
                     FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
 
                     MaxWidth = this.ActualWidth,
-                    PrimaryButtonText = "Remove Alert",
-                    SecondaryButtonText = "Cancel",
+                    PrimaryButtonText = "Remove Alert (Green)",
+                    SecondaryButtonText = "Cancel (Red)",
 
                     Content = new TextBlock
                     {
@@ -372,7 +399,7 @@ namespace MyPersonalGuardian.Presentation
             //if it is the last alert, do not increment
             if (lstAlerts.Items.Count > 0)
             {
-                LoadJson();
+                //TODO:LoadJSON();
                 DisplayAlerts();
                 lstAlerts.SelectedIndex++;
             }
@@ -396,8 +423,7 @@ namespace MyPersonalGuardian.Presentation
                 DisplayAlerts();
                 lstAlerts.SelectedIndex++;
             }
-
-
+            
             _sound = await PlaySound("SnoozeSample");
             _sound.Play();
 
