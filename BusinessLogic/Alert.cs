@@ -22,6 +22,7 @@ namespace WiFiConnect.BusinessLogic
         private string _sound;
 
         private DispatcherTimer _snoozeTimer;
+        private int _snoozeCount;
 
         public Alert(int alertID, string fpID, DateTime alertDT, string shortDesc, string longDesc, DateTime ackDT, int alertLvl)
         {
@@ -38,12 +39,8 @@ namespace WiFiConnect.BusinessLogic
             _sound = null;
 
             _snoozeTimer = new DispatcherTimer();
-            _snoozeTimer.Tick += OnSnoozeTimerTick;
-        }
-
-        private void OnSnoozeTimerTick(object sender, object e)
-        {
-            throw new NotImplementedException();
+           // _snoozeTimer.Tick += OnSnoozeTimerTick;
+            _snoozeCount = 0;
         }
 
         public int AlertID
@@ -86,6 +83,12 @@ namespace WiFiConnect.BusinessLogic
         {
             get { return _snoozeTimer; }
             set { _snoozeTimer = value; }
+        }
+
+        public int SnoozeCount
+        {
+            get { return _snoozeCount; }
+            set { _snoozeCount = value; }
         }
     }
 }

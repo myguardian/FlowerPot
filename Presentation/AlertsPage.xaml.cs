@@ -39,6 +39,7 @@ namespace MyPersonalGuardian.Presentation
         private const int RED_LED_PIN = 21;
         private const int UP_BUTTON_PIN = 27;
         private const int DOWN_BUTTON_PIN = 17;
+        private const int CANCEL_BUTTON_PIN = 9;
 
         private GpioPin _greenButtonPin;
         private GpioPin _yellowButtonPin;
@@ -48,6 +49,7 @@ namespace MyPersonalGuardian.Presentation
         private GpioPin _redLedPin;
         private GpioPin _upButtonPin;
         private GpioPin _downButtonPin;
+        private GpioPin _cancelButtonPin;
 
         private User _user;
         private List<Alert> _alerts;
@@ -78,8 +80,10 @@ namespace MyPersonalGuardian.Presentation
 
         private void UpdateAlerts(object sender, object e)
         {
+            int selectedIndex = lstAlerts.SelectedIndex;
             LoadJSON();
             DisplayAlerts();
+            lstAlerts.SelectedIndex = selectedIndex;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -122,6 +126,8 @@ namespace MyPersonalGuardian.Presentation
             _upButtonPin = gpio.OpenPin(UP_BUTTON_PIN);
             _downButtonPin = gpio.OpenPin(DOWN_BUTTON_PIN);
 
+            _cancelButtonPin = gpio.OpenPin(CANCEL_BUTTON_PIN);
+
             // Initialize LED to the OFF state by first writing a HIGH value
             // We write HIGH because the LED is wired in a active LOW configuration
             _greenLedPin.Write(GpioPinValue.Low);
@@ -157,17 +163,24 @@ namespace MyPersonalGuardian.Presentation
             else
                 _downButtonPin.SetDriveMode(GpioPinDriveMode.Input);
 
+            if (_cancelButtonPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                _cancelButtonPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else
+                _cancelButtonPin.SetDriveMode(GpioPinDriveMode.Input);
+
             _greenButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _yellowButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _redButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _upButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             _downButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+            _cancelButtonPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
 
             _greenButtonPin.ValueChanged += OnButtonPress;
             _yellowButtonPin.ValueChanged += OnButtonPress;
             _redButtonPin.ValueChanged += OnButtonPress;
             _upButtonPin.ValueChanged += OnButtonPress;
             _downButtonPin.ValueChanged += OnButtonPress;
+            _cancelButtonPin.ValueChanged += OnButtonPress;
         }
 
         private void OnButtonPress(GpioPin sender, GpioPinValueChangedEventArgs e)
@@ -201,11 +214,10 @@ namespace MyPersonalGuardian.Presentation
                         if (_dialogueOpen == false)
                         {
                             RemoveAlert();
-                        } 
-                        else
+                        }  else
                         {
-                            _removeAlertDialog.Hide();
                             _redLedPin.Write(GpioPinValue.Low);
+                            _removeAlertDialog.Hide();
                         }
                     }
                     else if (sender == _upButtonPin)
@@ -221,6 +233,10 @@ namespace MyPersonalGuardian.Presentation
                         {
                             GoDown();
                         }
+                    }
+                    else if (sender == _cancelButtonPin)
+                    {
+                        Cancel();
                     }
                 }
             });
@@ -264,8 +280,8 @@ namespace MyPersonalGuardian.Presentation
         private void LoadJSON()
         {
             //TODO: Temporary web server
-            //string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/getAlerts.php?flowerpotID={0}", "79B41758C"/*_user.FlowerPotID*/);
-            string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/alerts.json";
+            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/Demo/getAlerts.php");
+            //string url = "https://hanifso.dev.fast.sheridanc.on.ca/Pi/alerts.json";
             string alertString;
 
             using (var httpClient = new HttpClient())
@@ -298,7 +314,16 @@ namespace MyPersonalGuardian.Presentation
                     int alertID = Int32.Parse(alertObject.GetNamedString("Alert ID"));
 
                     string flowerpotID = alertObject.GetNamedString("Flowerpot ID");
-                    DateTime alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
+                    DateTime alertDateTime;
+                    if (alertObject.GetNamedString("Alert Timestamp").ToString().Equals("0000-00-00 00:00:00"))
+                    {
+                        alertDateTime = DateTime.Parse(DateTime.Now.ToString());
+                    }
+                    else
+                    {
+                        alertDateTime = DateTime.Parse(alertObject.GetNamedString("Alert Timestamp"));
+                    }
+
                     string shortDescription = alertObject.GetNamedString("Short Description");
                     string longDescription = alertObject.GetNamedString("Long Description");
 
@@ -387,7 +412,7 @@ namespace MyPersonalGuardian.Presentation
         private void ConfirmRemoveAlert()
         {
             Alert selectedAlert = (Alert)lstAlerts.SelectedItem;
-            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/acknowledgeAlert.php?alertID={0}", selectedAlert.AlertID);
+            string url = String.Format("https://hanifso.dev.fast.sheridanc.on.ca/Pi/Demo/acknowledgeAlert.php?alertID={0}", selectedAlert.AlertID);
 
             using (var httpClient = new HttpClient())
             {
@@ -399,7 +424,7 @@ namespace MyPersonalGuardian.Presentation
             //if it is the last alert, do not increment
             if (lstAlerts.Items.Count > 0)
             {
-                //TODO:LoadJSON();
+                LoadJSON();
                 DisplayAlerts();
                 lstAlerts.SelectedIndex++;
             }
@@ -417,6 +442,22 @@ namespace MyPersonalGuardian.Presentation
             _snoozedAlerts.Add(alert);
             _alerts.Remove(alert);
 
+            switch (alert.SnoozeCount)
+            {
+                case 1:
+                    alert.SnoozeTimer.Interval = TimeSpan.FromMinutes(1);
+                    break;
+                case 2:
+                    alert.SnoozeTimer.Interval = TimeSpan.FromMinutes(2);
+                    break;
+                case 3:
+                    alert.SnoozeTimer.Interval = TimeSpan.FromMinutes(3);
+                    break;
+                case 4:
+                    alert.SnoozeTimer.Interval = TimeSpan.FromMinutes(4);
+                    break;
+
+            }
             //if it is the last alert, dont increment
             if (lstAlerts.Items.Count > 0)
             {
@@ -428,6 +469,19 @@ namespace MyPersonalGuardian.Presentation
             _sound.Play();
 
             _yellowLedPin.Write(GpioPinValue.Low);
+        }
+
+        private void UnSnoozeAlert()
+        {
+            for (int i = 0; i < _snoozedAlerts.Count; i++)
+            {
+                _snoozedAlerts[i].SnoozeTimer.Tick += SnoozeTick;
+            }
+        }
+
+        private void SnoozeTick(object sender, object e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void PlayAlert()
@@ -467,6 +521,27 @@ namespace MyPersonalGuardian.Presentation
                 lstAlerts.SelectedIndex++;
                 lstAlerts.ScrollIntoView(lstAlerts.SelectedItem);
             }
+        }
+
+        /// <summary>
+        /// Cancel Button will close the dialogue, and stop any sound that is currently playing
+        /// </summary>
+        private void Cancel()
+        {
+            _removeAlertDialog.Hide();
+            _redLedPin.Write(GpioPinValue.Low);
+            _sound.Stop();
+        }
+
+        //TODO:
+        private void VolumeUp()
+        {
+
+        }
+
+        private void VolumeDown()
+        {
+
         }
     }
 }

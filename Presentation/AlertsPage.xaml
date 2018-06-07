@@ -13,18 +13,20 @@
             <RowDefinition Height="181*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="32" FontFamily="Agency FB" Foreground="White"/>
+        <TextBlock x:Name="txtWelcome" HorizontalAlignment="Center" Text="Happy DAY FNAME" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="32" FontFamily="Agency FB" Foreground="White" Margin="0,20,0,0"/>
         <TextBlock x:Name="txtNoAlerts" Text="There are no alerts to be displayed" TextWrapping="Wrap" Grid.Row="1" FontFamily="Agency FB" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <ListView x:Name="lstAlerts" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" FontSize="10" Foreground="White" Grid.Row="1" FontFamily="Agency FB">
+        <ListView x:Name="lstAlerts" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" FontSize="10" Foreground="White" Grid.Row="1" FontFamily="Agency FB" Margin="0,15,0,0">
             <ListView.ItemTemplate>
                 <DataTemplate x:Name="AlertListViewItem">
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                        <!--
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="_txtShortDescription" Text="{Binding ShortDescription}" FontFamily="Agency FB" Margin="0,0,20,0"/>
-                            <TextBlock x:Name="_txtAlertLevel" Text="{Binding AlertLevel}" FontFamily="Agency FB"/>
+                            <TextBlock x:Name="_txtShortDescription" Text="{Binding ShortDescription}" FontSize="26" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                            <TextBlock x:Name="_txtAlertLevel" Text="{Binding AlertLevel}" FontSize="26" FontFamily="Agency FB"/>
                         </StackPanel>
+                        -->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="_txtLongDescription" Text="{Binding LongDescription}" FontFamily="Agency FB" Margin="0,0,20,0"/>
+                            <TextBlock x:Name="_txtLongDescription" Text="{Binding LongDescription}" FontSize="26" FontFamily="Agency FB" Margin="0,0,20,0"/>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

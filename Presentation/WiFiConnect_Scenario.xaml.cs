@@ -365,7 +365,7 @@ namespace WiFiConnect
                 //    FontFamily = new Windows.UI.Xaml.Media.FontFamily("Agency FB"),
                 //};
 
-                await dialog.ShowAsync();
+                //await dialog.ShowAsync();
 
                 rootPage.Frame.Navigate(typeof(AlertsPage));
             }

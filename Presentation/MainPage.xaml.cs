@@ -32,7 +32,7 @@ namespace SDKTemplate
         private void OnSetupClick(object sender, RoutedEventArgs e)
         {
             //this.Frame.Navigate(typeof(UserInfo)); //use for testing
-            this.Frame.Navigate(typeof(AlertsPage));
+            this.Frame.Navigate(typeof(WifiPage));
         }
     }
 }
